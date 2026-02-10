@@ -1,0 +1,49 @@
+#include <stdio.h> 
+#include <unistd.h> 
+#include <sys/types.h> 
+#include <sys/stat.h> 
+#include <fcntl.h> 
+#include <dirent.h> 
+#include <string.h> 
+int main() { 
+pid_t pid; 
+int fd; 
+char buffer[100]; 
+DIR *d; 
+    struct dirent *dir; 
+ 
+    // getpid() and getppid() 
+    printf("Process ID: %d\n", getpid()); 
+    printf("Parent Process ID: %d\n", getppid()); 
+ 
+    // fork() 
+    pid = fork(); 
+    if(pid == 0) { 
+        printf("Child Process Created. PID: %d\n", getpid()); 
+    } else { 
+        printf("Parent Process Continues. Child PID: %d\n", pid); 
+    } 
+ 
+    // open(), write(), close() 
+    fd = open("sample.txt", O_CREAT | O_WRONLY, 0644); 
+    write(fd, "Hello OS Lab!\n", 14); 
+    close(fd); 
+ 
+    // open(), read(), close() 
+    fd = open("sample.txt", O_RDONLY); 
+    read(fd, buffer, sizeof(buffer)); 
+    printf("File Content: %s", buffer); 
+    close(fd); 
+ 
+    // opendir(), readdir(), closedir() 
+    d = opendir("."); 
+    if (d) { 
+        printf("\nDirectory Contents:\n"); 
+        while ((dir = readdir(d)) != NULL) { 
+            printf("%s\n", dir->d_name); 
+        } 
+        closedir(d); 
+    } 
+ 
+    return 0; 
+}
